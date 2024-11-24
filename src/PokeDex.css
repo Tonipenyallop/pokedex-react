@@ -1,8 +1,21 @@
 .pokedex-container {
-  justify-content: center;
   padding: 10%;
+}
+.generation-button-container {
   display: flex;
+  justify-content: space-evenly;
   flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.music-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .pokemon-card-container {
@@ -39,6 +52,7 @@
   align-content: center;
   flex-wrap: wrap;
   /* 
+  todo add each types
   .type {
     border: 1px solid red;
   border-radius: 20px;} */
