@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./PokeDex.css";
 import { PokedexService } from "./services/pokedex-service";
+import { GENERATIONS } from "./constants";
 import { Pokemon } from "./type";
 import { musics } from "./musics";
 
@@ -10,7 +11,10 @@ const PokeDex = () => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   // 649 -> till BW
-  const pokemonIds = "649";
+  // const pokemonIds = "151";
+  // DP
+  const pokemonIds = "493";
+  // const pokemonIds = "649";
   const pokemonService = PokedexService.getInstance();
 
   // pallet town music
@@ -72,17 +76,42 @@ const PokeDex = () => {
     return;
   }
 
+  async function handleGenButtonClick(
+    event: React.MouseEvent<HTMLButtonElement>
+  ) {
+    const generationId = event.currentTarget.value;
+    const pokemons = await pokemonService.getPokemonsByGen(generationId);
+
+    setPokemons(pokemons);
+  }
+
+  function renderGenerationButton() {
+    return Array.from({ length: GENERATIONS.length }, (_, idx) => (
+      <button
+        value={GENERATIONS[idx].genId}
+        onClick={handleGenButtonClick}
+        title={GENERATIONS[idx].title}
+      >
+        {GENERATIONS[idx].title}
+      </button>
+    ));
+  }
+
   return (
     <div className="pokedex-container">
-      <button onClick={playPrevMusic}>PREV MUSIC</button>
-      <audio
-        ref={audioRef}
-        src={musics[musicIndex]}
-        controls
-        onEnded={handleEnded}
-      />
-      <button onClick={handlePlayNext}>NEXT MUSIC</button>
-
+      <div className="generation-button-container">
+        {renderGenerationButton()}
+      </div>
+      <div className="music-container">
+        <button onClick={playPrevMusic}>PREV MUSIC</button>
+        <audio
+          ref={audioRef}
+          src={musics[musicIndex]}
+          controls
+          onEnded={handleEnded}
+        />
+        <button onClick={handlePlayNext}>NEXT MUSIC</button>
+      </div>
       <div className="pokemon-card-container">
         {pokemons.map((pokemon: Pokemon) => (
           <div className="pokemon-card" key={pokemon.name}>
