@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Pokemon } from "../type";
+import { GENERATIONS } from "../constants";
 
 export class PokedexService {
   private static instance: PokedexService;
@@ -46,6 +47,12 @@ export class PokedexService {
     return res.data;
   }
 
+  async getPokemonsByGen(genId: string): Promise<Pokemon[]> {
+    const res = await axios.get(`${this.URL_PATH}/gen/${genId}`);
+    return res.data;
+  }
+
+  // remove
   async getAllPokemonBGMs() {
     const res = await axios.get(`${this.URL_PATH}/musics`);
     return res.data;
