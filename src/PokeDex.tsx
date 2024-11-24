@@ -7,10 +7,10 @@ import { musics } from "./musics";
 const BGM_MAX_NUM_IDX = 45;
 
 const PokeDex = () => {
-  const [pokemons, setPokemons] = useState();
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   // 649 -> till BW
-  const pokemonIds = Array.from({ length: 151 }, (_, idx) => `${idx + 1}`);
+  const pokemonIds = "649";
   const pokemonService = PokedexService.getInstance();
 
   // pallet town music
