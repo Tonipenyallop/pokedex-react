@@ -12,7 +12,7 @@ const PokeDex = () => {
   const [isLoading, setIsLoading] = useState(true);
   // const pokemonIds = "151";
   // 649 -> till BW
-  const pokemonIds = "649";
+  const pokemonIds = "151";
   const pokemonService = PokedexService.getInstance();
 
   // pallet town music
