@@ -10,11 +10,9 @@ const BGM_MAX_NUM_IDX = 45;
 const PokeDex = () => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  // 649 -> till BW
   // const pokemonIds = "151";
-  // DP
-  const pokemonIds = "493";
-  // const pokemonIds = "649";
+  // 649 -> till BW
+  const pokemonIds = "649";
   const pokemonService = PokedexService.getInstance();
 
   // pallet town music
