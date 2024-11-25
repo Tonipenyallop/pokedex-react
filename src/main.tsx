@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PokeDex />}></Route>
-        <Route path="/detail" element={<PokeDexDetail />}></Route>
+        <Route path="/detail/:pokemonId" element={<PokeDexDetail />}></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>
