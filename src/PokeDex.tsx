@@ -1,44 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import "./PokeDex.css";
 import { PokedexService } from "./services/pokedex-service";
-import { GENERATIONS } from "./constants";
 import { Pokemon } from "./type";
 import { musics } from "./musics";
-
-const BGM_MAX_NUM_IDX = 45;
+import { useNavigate } from "react-router";
+import { PokeDexHelper } from "./helpers/PokeDex.ts";
+import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
 
 const PokeDex = () => {
+  // pallet town music
+  const [musicIndex, setMusicIndex] = useState(1);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  // const pokemonIds = "151";
-  // 649 -> till BW
   const pokemonIds = "151";
   const pokemonService = PokedexService.getInstance();
 
-  // pallet town music
-  const [musicIndex, setMusicIndex] = useState(1);
-
-  function playNextMusic() {
-    const newIdx = (musicIndex + 1) % BGM_MAX_NUM_IDX;
-    setMusicIndex(newIdx);
-    setTimeout(() => {
-      if (audioRef.current === null) {
-        return;
-      }
-      audioRef.current.play();
-    }, 1000);
+  const navigate = useNavigate();
+  function handleCardClicked(pokemonId: number) {
+    console.log("clicked!");
+    console.log("pokemonId", pokemonId);
+    navigate(`/detail/${pokemonId.toString()}`);
   }
 
-  function playPrevMusic() {
-    const newIdx = musicIndex === 0 ? BGM_MAX_NUM_IDX - 1 : musicIndex - 1;
-    setMusicIndex(newIdx);
-    setTimeout(() => {
-      if (audioRef.current === null) {
-        return;
-      }
-      audioRef.current.play();
-    }, 1000);
-  }
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const pokedexHelper = new PokeDexHelper({
+    musicIndex,
+    setMusicIndex,
+    audioRef,
+  });
 
   useEffect(() => {
     const fetchPokemons = async () => {
@@ -56,18 +46,12 @@ const PokeDex = () => {
     fetchPokemons();
   }, []);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const handleEnded = () => {
-    console.log("handleEnded was called");
-    playNextMusic(); // Automatically play the next song
+  const handlePlayNext = () => {
+    pokedexHelper.playNextMusic();
   };
 
-  const handlePlayNext = () => {
-    playNextMusic();
-    if (audioRef.current) {
-      audioRef.current.play(); // Play the next song
-    }
+  const handlePlayPrev = () => {
+    pokedexHelper.playPrevMusic();
   };
 
   if (isLoading) {
@@ -83,36 +67,31 @@ const PokeDex = () => {
     setPokemons(pokemons);
   }
 
-  function renderGenerationButton() {
-    return Array.from({ length: GENERATIONS.length }, (_, idx) => (
-      <button
-        value={GENERATIONS[idx].genId}
-        onClick={handleGenButtonClick}
-        title={GENERATIONS[idx].title}
-      >
-        {GENERATIONS[idx].title}
-      </button>
-    ));
-  }
-
   return (
     <div className="pokedex-container">
       <div className="generation-button-container">
-        {renderGenerationButton()}
+        {PokeDexJSXHelper.renderGenerationButton({
+          onClick: handleGenButtonClick,
+        })}
       </div>
       <div className="music-container">
-        <button onClick={playPrevMusic}>PREV MUSIC</button>
+        <button onClick={handlePlayPrev}>PREV MUSIC</button>
         <audio
           ref={audioRef}
           src={musics[musicIndex]}
           controls
-          onEnded={handleEnded}
+          onEnded={handlePlayNext}
         />
         <button onClick={handlePlayNext}>NEXT MUSIC</button>
       </div>
       <div className="pokemon-card-container">
         {pokemons.map((pokemon: Pokemon) => (
-          <div className="pokemon-card" key={pokemon.name}>
+          <div
+            className="pokemon-card"
+            key={pokemon.name}
+            onClick={() => handleCardClicked(pokemon.id)}
+            defaultValue={pokemon.id}
+          >
             <div className="pokemon-info-container">
               <div className="">{pokemon.name}</div>
               <div className="type-container">
