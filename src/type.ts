@@ -74,3 +74,7 @@ export type Pokemon = {
   }[];
   weight: number;
 };
+
+export interface PokemonCardProps {
+  pokemons: Pokemon[];
+}

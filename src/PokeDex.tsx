@@ -3,9 +3,9 @@ import "./PokeDex.css";
 import { PokedexService } from "./services/pokedex-service";
 import { Pokemon } from "./type";
 import { musics } from "./musics";
-import { useNavigate } from "react-router";
 import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
+import PokemonCard from "./PokemonCard.tsx";
 
 const PokeDex = () => {
   // pallet town music
@@ -15,12 +15,7 @@ const PokeDex = () => {
   const pokemonIds = "151";
   const pokemonService = PokedexService.getInstance();
 
-  const navigate = useNavigate();
-  function handleCardClicked(pokemonId: number) {
-    console.log("clicked!");
-    console.log("pokemonId", pokemonId);
-    navigate(`/detail/${pokemonId.toString()}`);
-  }
+  const [pokemonSelected, setPokemonSelected] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -84,28 +79,8 @@ const PokeDex = () => {
         />
         <button onClick={handlePlayNext}>NEXT MUSIC</button>
       </div>
-      <div className="pokemon-card-container">
-        {pokemons.map((pokemon: Pokemon) => (
-          <div
-            className="pokemon-card"
-            key={pokemon.name}
-            onClick={() => handleCardClicked(pokemon.id)}
-            defaultValue={pokemon.id}
-          >
-            <div className="pokemon-info-container">
-              <div className="">{pokemon.name}</div>
-              <div className="type-container">
-                <div className="type">{pokemon.types[0].type.name}</div>
-                <div className="type">
-                  {pokemon.types[1] && pokemon.types[1].type.name}
-                </div>
-              </div>
-            </div>
 
-            <img src={pokemon.sprites.front_default || ""} alt="" />
-          </div>
-        ))}
-      </div>
+      <PokemonCard pokemons={pokemons} />
     </div>
   );
 };
