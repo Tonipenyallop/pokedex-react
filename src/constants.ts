@@ -5,3 +5,5 @@ export const GENERATIONS = [
   { genId: "fourth", title: "FOURTH" },
   { genId: "fifth", title: "FIFTH" },
 ];
+
+export const BGM_MAX_NUM_IDX = 45;
