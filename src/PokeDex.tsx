@@ -6,6 +6,7 @@ import { musics } from "./musics";
 import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
 import PokemonCard from "./PokemonCard.tsx";
+import PokemonDetail from "./PokeDexDetail.tsx";
 
 const PokeDex = () => {
   // pallet town music
@@ -64,23 +65,27 @@ const PokeDex = () => {
 
   return (
     <div className="pokedex-container">
-      <div className="generation-button-container">
-        {PokeDexJSXHelper.renderGenerationButton({
-          onClick: handleGenButtonClick,
-        })}
-      </div>
-      <div className="music-container">
-        <button onClick={handlePlayPrev}>PREV MUSIC</button>
-        <audio
-          ref={audioRef}
-          src={musics[musicIndex]}
-          controls
-          onEnded={handlePlayNext}
-        />
-        <button onClick={handlePlayNext}>NEXT MUSIC</button>
-      </div>
+      {/* <PokemonDetail /> */}
 
-      <PokemonCard pokemons={pokemons} />
+      <div className="">
+        <div className="generation-button-container">
+          {PokeDexJSXHelper.renderGenerationButton({
+            onClick: handleGenButtonClick,
+          })}
+        </div>
+        <div className="music-container">
+          <button onClick={handlePlayPrev}>PREV MUSIC</button>
+          <audio
+            ref={audioRef}
+            src={musics[musicIndex]}
+            controls
+            onEnded={handlePlayNext}
+          />
+          <button onClick={handlePlayNext}>NEXT MUSIC</button>
+        </div>
+
+        <PokemonCard pokemons={pokemons} onClick={setPokemonSelected} />
+      </div>
     </div>
   );
 };

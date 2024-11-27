@@ -141,28 +141,37 @@ const PokeDexDetail = () => {
 
   return (
     <div className="pokemon-card-container">
-      <div className="pokemon-card">
-        <div className="">
-          <div className="">Latest</div>
+      <div className="pokemon-card detail-page">
+        <div className="detail-audio-container">
+          <div className="">
+            <div className="">Latest</div>
 
-          <audio controls>
-            <source src={pokemonDetail.cries.latest} type="audio/ogg"></source>
-            Your browser does not support the audio element.
-          </audio>
+            <audio controls>
+              <source
+                src={pokemonDetail.cries.latest}
+                type="audio/ogg"
+              ></source>
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+
+          <div className="">
+            <div className="">legacy</div>
+
+            <audio controls>
+              <source
+                src={pokemonDetail.cries.legacy}
+                type="audio/ogg"
+              ></source>
+              Your browser does not support the audio element.
+            </audio>
+          </div>
         </div>
-
         <div className="">
-          <div className="">legacy</div>
-
-          <audio controls>
-            <source src={pokemonDetail.cries.legacy} type="audio/ogg"></source>
-            Your browser does not support the audio element.
-          </audio>
+          {spritesProps.map((prop) => (
+            <img src={pokemonDetail.sprites[prop as Sprite] || ""} alt="" />
+          ))}
         </div>
-
-        {spritesProps.map((prop) => (
-          <img src={pokemonDetail.sprites[prop as Sprite] || ""} alt="" />
-        ))}
       </div>
 
       <div className="">

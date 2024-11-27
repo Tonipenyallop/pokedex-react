@@ -38,6 +38,17 @@
   min-width: 260px;
   margin: 10px;
   background-color: #f2f2f2;
+  cursor: pointer;
+
+  &.detail-page {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.detail-audio-container {
+  display: flex;
+  padding: 10px;
 }
 
 .pokemon-info-container {
