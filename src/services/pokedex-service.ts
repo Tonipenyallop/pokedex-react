@@ -41,9 +41,20 @@ export class PokedexService {
     }
   }
 
-  // 1 index
-  async getMultiplePokemonDetails(pokemonId: string): Promise<Pokemon[]> {
-    const res = await axios.get(`${this.URL_PATH}/${pokemonId}`);
+  // todo can be used for single pokemon as well
+  /*
+    1. pokemonId is "1 index" 
+    2. pokemonId usually end of gen number
+      i.g) 151, 649 ...
+   */
+
+  async getMultiplePokemonDetails(
+    pokemonId: string,
+    isRange = false
+  ): Promise<Pokemon[]> {
+    const res = await axios.get(
+      `${this.URL_PATH}/${pokemonId}?isRange=${isRange}`
+    );
     return res.data;
   }
 

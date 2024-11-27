@@ -8,6 +8,10 @@ export type Pokemon = {
     slot: number;
   }[];
   base_experience: number;
+  cries: {
+    latest: "";
+    legacy: "";
+  };
   forms: {
     name: string;
     url: string;
@@ -77,4 +81,15 @@ export type Pokemon = {
 
 export interface PokemonCardProps {
   pokemons: Pokemon[];
+  onClick: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export type Sprite =
+  | "back_default"
+  | "back_female"
+  | "back_shiny"
+  | "back_shiny_female"
+  | "front_default"
+  | "front_female"
+  | "front_shiny"
+  | "front_shiny_female";
