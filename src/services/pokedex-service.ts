@@ -68,4 +68,9 @@ export class PokedexService {
     const res = await axios.get(`${this.URL_PATH}/musics`);
     return res.data;
   }
+
+  async getAllPokemons() {
+    const res = await axios.get(`${this.URL_PATH}/all`);
+    return res.data;
+  }
 }
