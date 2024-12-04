@@ -7,7 +7,6 @@ export type Pokemon = {
     is_hidden: boolean;
     slot: number;
   }[];
-  base_experience: number;
   cries: {
     latest: "";
     legacy: "";
@@ -16,18 +15,9 @@ export type Pokemon = {
     name: string;
     url: string;
   }[];
-  game_indices: {
-    game_index: number;
-    version: {
-      name: string;
-      url: string;
-    };
-  }[];
+
   height: number;
-  held_items: any[]; // Replace `any` with a specific type if you know the structure of held items
   id: number;
-  is_default: boolean;
-  location_area_encounters: string;
   moves: {
     move: {
       name: string;
@@ -46,7 +36,6 @@ export type Pokemon = {
     }[];
   }[];
   name: string;
-  order: number;
   species: {
     name: string;
     url: string;
@@ -61,14 +50,6 @@ export type Pokemon = {
     front_shiny: string | null;
     front_shiny_female: string | null;
   };
-  stats: {
-    base_stat: number;
-    effort: number;
-    stat: {
-      name: string;
-      url: string;
-    };
-  }[];
   types: {
     slot: number;
     type: {
@@ -93,3 +74,14 @@ export type Sprite =
   | "front_female"
   | "front_shiny"
   | "front_shiny_female";
+
+export type GenId =
+  | "first"
+  | "second"
+  | "third"
+  | "fourth"
+  | "fifth"
+  | "sixth"
+  | "seventh"
+  | "eighth"
+  | "ninth";
