@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import "./PokeDex.css";
 import { PokedexService } from "./services/pokedex-service";
-import { Pokemon } from "./type";
+import { GenId, Pokemon } from "./type";
 import { musics } from "./musics";
 import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
 import PokemonCard from "./PokemonCard.tsx";
-import PokemonDetail from "./PokeDexDetail.tsx";
+import { GEN_ID_KEY } from "./constants.ts";
 
 const PokeDex = () => {
   // pallet town music
   const [musicIndex, setMusicIndex] = useState(1);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const pokemonIds = "151";
+
   const pokemonService = PokedexService.getInstance();
 
   const [pokemonSelected, setPokemonSelected] = useState(false);
@@ -29,9 +29,15 @@ const PokeDex = () => {
   useEffect(() => {
     const fetchPokemons = async () => {
       try {
-        const pokemons = await pokemonService.getMultiplePokemonDetails(
-          pokemonIds
-        );
+        const genIdInLocalStorage = localStorage.getItem(GEN_ID_KEY);
+
+        const pokemons =
+          genIdInLocalStorage && genIdInLocalStorage !== "all"
+            ? await pokemonService.getPokemonsByGen(
+                genIdInLocalStorage as GenId
+              )
+            : await pokemonService.getAllPokemons();
+
         setPokemons(pokemons);
       } catch (err) {
         console.error(err);
@@ -57,16 +63,20 @@ const PokeDex = () => {
   async function handleGenButtonClick(
     event: React.MouseEvent<HTMLButtonElement>
   ) {
-    const generationId = event.currentTarget.value;
-    const pokemons = await pokemonService.getPokemonsByGen(generationId);
+    const generationId = event.currentTarget.value as GenId | "all";
+    let pokemons;
+    if (generationId === "all") {
+      pokemons = await pokemonService.getAllPokemons();
+    } else {
+      pokemons = await pokemonService.getPokemonsByGen(generationId);
+    }
 
     setPokemons(pokemons);
+    localStorage.setItem(GEN_ID_KEY, generationId);
   }
 
   return (
     <div className="pokedex-container">
-      {/* <PokemonDetail /> */}
-
       <div className="">
         <div className="generation-button-container">
           {PokeDexJSXHelper.renderGenerationButton({
