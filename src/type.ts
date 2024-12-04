@@ -85,3 +85,30 @@ export type GenId =
   | "seventh"
   | "eighth"
   | "ninth";
+
+type NameAndURL = {
+  name: string;
+  url: string;
+};
+export type FlavorText = {
+  flavor_text: string;
+  language: NameAndURL;
+  version: NameAndURL;
+};
+
+export type SpeciesInfo = {
+  evolution_chain: string;
+  flavor_text_entries: FlavorText[];
+};
+
+export type Language =
+  | "en"
+  | "fr"
+  | "ja-Hrkt"
+  | "ko"
+  | "de"
+  | "es"
+  | "it"
+  | "ja"
+  | "zh-Hant"
+  | "zh-Hans";
