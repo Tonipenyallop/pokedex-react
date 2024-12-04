@@ -68,3 +68,41 @@
     border: 1px solid red;
   border-radius: 20px;} */
 }
+
+.poke-dex-detail-container {
+}
+
+.language-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.poke-dex-detail-card-container {
+  display: flex;
+  justify-content: center;
+}
+
+.flavor-text-container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.version-name {
+  margin-right: 20px;
+  padding: 5px;
+  border: 1px solid #d72525;
+  border-radius: 30px;
+}
+
+.flavor-text {
+  padding: 8px;
+  border: 1px solid gray;
+  border-radius: 20px;
+  display: flex;
+  margin: 5px;
+  align-items: center;
+}
