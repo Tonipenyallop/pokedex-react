@@ -1,6 +1,5 @@
 import axios from "axios";
-import { Pokemon } from "../type";
-import { GENERATIONS } from "../constants";
+import { GenId, Pokemon } from "../type";
 
 export class PokedexService {
   private static instance: PokedexService;
@@ -41,24 +40,12 @@ export class PokedexService {
     }
   }
 
-  // todo can be used for single pokemon as well
-  /*
-    1. pokemonId is "1 index" 
-    2. pokemonId usually end of gen number
-      i.g) 151, 649 ...
-   */
-
-  async getMultiplePokemonDetails(
-    pokemonId: string,
-    isRange = false
-  ): Promise<Pokemon[]> {
-    const res = await axios.get(
-      `${this.URL_PATH}/${pokemonId}?isRange=${isRange}`
-    );
+  async getPokemonDetails(pokemonId: string): Promise<Pokemon> {
+    const res = await axios.get(`${this.URL_PATH}/${pokemonId}`);
     return res.data;
   }
 
-  async getPokemonsByGen(genId: string): Promise<Pokemon[]> {
+  async getPokemonsByGen(genId: GenId): Promise<Pokemon[]> {
     const res = await axios.get(`${this.URL_PATH}/gen/${genId}`);
     return res.data;
   }
