@@ -1,10 +1,21 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { PokedexService } from "./services/pokedex-service";
 import { useEffect, useState } from "react";
-import { Pokemon, Sprite } from "./type";
+import { GEN_GROUPS, GEN_ID_KEY } from "./constants";
+import {
+  GenId,
+  Pokemon,
+  Sprite,
+  SpeciesInfo,
+  Language,
+  FlavorText,
+} from "./type";
 
 const PokeDexDetail = () => {
   const { pokemonId } = useParams();
+  if (!pokemonId) {
+    throw new Error("pokemonId from param is empty");
+  }
 
   //   Can we do better?
   const [pokemonDetail, setPokemonDetail] = useState<Pokemon>({
@@ -18,7 +29,6 @@ const PokeDexDetail = () => {
         slot: 0,
       },
     ],
-    base_experience: 0,
     cries: {
       latest: "",
       legacy: "",
@@ -29,20 +39,8 @@ const PokeDexDetail = () => {
         url: "",
       },
     ],
-    game_indices: [
-      {
-        game_index: 0,
-        version: {
-          name: "",
-          url: "",
-        },
-      },
-    ],
     height: 0,
-    held_items: [], // Replace with specific default values if known
     id: 0,
-    is_default: false,
-    location_area_encounters: "",
     moves: [
       {
         move: {
@@ -65,7 +63,6 @@ const PokeDexDetail = () => {
       },
     ],
     name: "",
-    order: 0,
     species: {
       name: "",
       url: "",
@@ -80,16 +77,6 @@ const PokeDexDetail = () => {
       front_shiny: null,
       front_shiny_female: null,
     },
-    stats: [
-      {
-        base_stat: 0,
-        effort: 0,
-        stat: {
-          name: "",
-          url: "",
-        },
-      },
-    ],
     types: [
       {
         slot: 0,
@@ -101,17 +88,35 @@ const PokeDexDetail = () => {
     ],
     weight: 0,
   });
+
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
-  console.log("pokemonId", pokemonId);
+  const [flavorTexts, setFlavorTexts] = useState<FlavorText[]>([]);
+  // en ja ko
+  const [language, setLanguage] = useState<Language>("en");
+  const [languageOptions, setLanguageOptions] = useState<Language[]>([]);
+
   const pokemonService = PokedexService.getInstance();
   useEffect(() => {
     async function getPokemonDetail() {
       try {
         setIsLoading(true);
-        const [res] = await pokemonService.getMultiplePokemonDetails(
-          pokemonId as string,
-          true
-        );
+        const res = await pokemonService.getPokemonDetails(pokemonId as string);
+        const res2 = (await pokemonService.getEvolutionChainById(
+          pokemonId as string
+        )) as SpeciesInfo;
+
+        const set = new Set();
+        res2.flavor_text_entries.forEach((txt) => {
+          set.add(txt.language.name);
+        });
+        setLanguageOptions(Array.from(set.values()) as Language[]);
+
+        console.log(set);
+        console.log(res2.flavor_text_entries);
+
+        setFlavorTexts(res2.flavor_text_entries);
 
         console.log(res);
         setPokemonDetail(res);
@@ -122,7 +127,7 @@ const PokeDexDetail = () => {
       }
     }
     getPokemonDetail();
-  }, []);
+  }, [pokemonId]);
 
   const spritesProps = [
     "front_default",
@@ -135,47 +140,108 @@ const PokeDexDetail = () => {
     "back_shiny_female",
   ];
 
+  function handleHome() {
+    navigate("/");
+  }
+
+  function handleRightArrow() {
+    console.log("handleLeftArrow was called");
+    const genId = localStorage.getItem(GEN_ID_KEY) as GenId;
+    if (!genId) {
+      throw new Error("genId in localStorage is empty");
+    }
+    const genRange = GEN_GROUPS[genId];
+
+    const nextIndex = (Number(pokemonId) + 1) % genRange[1];
+
+    console.log(nextIndex);
+    navigate(`/detail/${nextIndex.toString()}`);
+  }
+  function handleLeftArrow() {
+    console.log("handleLeftArrow was called");
+    const genId = localStorage.getItem(GEN_ID_KEY) as GenId;
+    if (!genId) {
+      throw new Error("genId in localStorage is empty");
+    }
+    const genRange = GEN_GROUPS[genId];
+    console.log("genRange", genRange);
+    const nextIndex =
+      genRange[0] - Number(pokemonId) === 0
+        ? genRange[1]
+        : Number(pokemonId) - 1;
+
+    console.log(nextIndex);
+    navigate(`/detail/${nextIndex.toString()}`);
+  }
+
   if (isLoading) {
     return;
   }
 
   return (
-    <div className="pokemon-card-container">
-      <div className="pokemon-card detail-page">
-        <div className="detail-audio-container">
-          <div className="">
-            <div className="">Latest</div>
+    <div className="poke-dex-detail-container">
+      <button onClick={handleHome}>HOME</button>
+      <div className="poke-dex-detail-card-container">
+        <button onClick={handleLeftArrow}>Arrow Left</button>
+        <div className="pokemon-card detail-page">
+          <div className="detail-audio-container">
+            <div className="">
+              <div className="">Latest</div>
 
-            <audio controls>
-              <source
-                src={pokemonDetail.cries.latest}
-                type="audio/ogg"
-              ></source>
-              Your browser does not support the audio element.
-            </audio>
+              <audio controls>
+                <source
+                  src={pokemonDetail.cries.latest}
+                  type="audio/ogg"
+                ></source>
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+
+            <div className="">
+              <div className="">legacy</div>
+
+              <audio controls>
+                <source
+                  src={pokemonDetail.cries.legacy}
+                  type="audio/ogg"
+                ></source>
+                Your browser does not support the audio element.
+              </audio>
+            </div>
           </div>
-
           <div className="">
-            <div className="">legacy</div>
-
-            <audio controls>
-              <source
-                src={pokemonDetail.cries.legacy}
-                type="audio/ogg"
-              ></source>
-              Your browser does not support the audio element.
-            </audio>
+            {spritesProps.map((prop) => (
+              <img src={pokemonDetail.sprites[prop as Sprite] || ""} alt="" />
+            ))}
           </div>
         </div>
-        <div className="">
-          {spritesProps.map((prop) => (
-            <img src={pokemonDetail.sprites[prop as Sprite] || ""} alt="" />
-          ))}
-        </div>
+
+        <button onClick={handleRightArrow}>Arrow Right</button>
       </div>
-
-      <div className="">
+      <div className="language-container">
+        {languageOptions.map((label) => (
+          <button
+            value={label}
+            onClick={(e) => {
+              console.log("e.target", e.target.value);
+              setLanguage(e.target.value);
+            }}
+          >
+            {label}/{}
+          </button>
+        ))}
+      </div>
+      <div className="flavor-text-container">
         {/* pokemon-species api -> flavor text */}
+
+        {flavorTexts
+          .filter((text) => text.language.name === language)
+          .map((text) => (
+            <div className="flavor-text">
+              <div className="version-name">{text.version.name}</div>
+              <div className="">{text.flavor_text}</div>
+            </div>
+          ))}
 
         {/* evolution-chain api ->  */}
       </div>
