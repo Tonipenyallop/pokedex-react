@@ -2,29 +2,91 @@ import { useState, useEffect, useRef } from "react";
 import "./PokeDex.css";
 import { PokedexService } from "./services/pokedex-service";
 import { GenId, Pokemon } from "./type";
-import { musics } from "./musics";
 import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
 import PokemonCard from "./PokemonCard.tsx";
-import { GEN_ID_KEY } from "./constants.ts";
+import { GEN_ID_KEY, MAX_MUSIC_LEN } from "./constants.ts";
 
 const PokeDex = () => {
   // pallet town music
-  const [musicIndex, setMusicIndex] = useState(1);
+  const [musicIndex, setMusicIndex] = useState(0);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [youtubeMusics, setYoutubeMusics] = useState([]);
 
   const pokemonService = PokedexService.getInstance();
 
   const [pokemonSelected, setPokemonSelected] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const playerRef = useRef<YT.Player | null>(null);
 
-  const pokedexHelper = new PokeDexHelper({
-    musicIndex,
-    setMusicIndex,
-    audioRef,
-  });
+  useEffect(() => {
+    // race condition?
+    setTimeout(() => {
+      console.log("onYouTubeIframeAPIReady event");
+      new window.YT.Player("player", {
+        playerVars: {
+          listType: "playlist",
+        },
+        events: {
+          onReady: (event) => {
+            playerRef.current = event.target; // Fully initialized player
+            playerRef.current?.loadPlaylist({
+              list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
+              index: musicIndex,
+            });
+            console.log("playerRef", playerRef);
+            console.log("Player ready");
+          },
+        },
+      });
+    }, 1000);
+  }, []);
+
+  function handlePlayClick() {
+    console.log("playerRef.current", playerRef.current);
+    if (playerRef.current) {
+      playerRef.current.playVideo(); // This actually starts the video
+    }
+  }
+
+  function stopPlaying() {
+    if (playerRef.current) {
+      playerRef.current.pauseVideo(); // This actually starts the video
+    }
+  }
+  function playFromX() {
+    if (playerRef.current) {
+      playerRef.current.seekTo(60, true); // This actually starts the video
+      playerRef.current.playVideo(); // This actually starts the video
+    }
+  }
+
+  function handleNextMusic() {
+    if (!playerRef.current) {
+      return;
+    }
+    const nextIndex = (musicIndex + 1) % MAX_MUSIC_LEN;
+    playerRef.current.loadPlaylist({
+      list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
+      index: nextIndex,
+    });
+    setMusicIndex(nextIndex);
+    playerRef.current?.playVideo();
+  }
+
+  function handlePrevMusic() {
+    if (!playerRef.current) {
+      return;
+    }
+    const prevIndex = musicIndex <= 0 ? MAX_MUSIC_LEN - 1 : musicIndex - 1;
+    playerRef.current.loadPlaylist({
+      list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
+      index: prevIndex,
+    });
+    setMusicIndex(prevIndex);
+    playerRef.current?.playVideo();
+  }
 
   useEffect(() => {
     const fetchPokemons = async () => {
@@ -39,6 +101,13 @@ const PokeDex = () => {
             : await pokemonService.getAllPokemons();
 
         setPokemons(pokemons);
+
+        // if i add below cannot render box
+        // get music
+        const tmp = await pokemonService.getAllPokemonBGMs();
+        console.log("tmp", tmp);
+        setYoutubeMusics(tmp);
+        // setYoutubeMusics(tmp.musicDescription);
       } catch (err) {
         console.error(err);
       } finally {
@@ -47,14 +116,6 @@ const PokeDex = () => {
     };
     fetchPokemons();
   }, []);
-
-  const handlePlayNext = () => {
-    pokedexHelper.playNextMusic();
-  };
-
-  const handlePlayPrev = () => {
-    pokedexHelper.playPrevMusic();
-  };
 
   if (isLoading) {
     return;
@@ -77,21 +138,19 @@ const PokeDex = () => {
 
   return (
     <div className="pokedex-container">
+      <button onClick={handlePrevMusic}>Index MINUS</button>
+      <div id="player"></div>
+      <button onClick={handleNextMusic}>Index PLUS</button>
+
+      <button onClick={playFromX}>XX</button>
+
+      <button onClick={handlePlayClick}>play</button>
+      <button onClick={stopPlaying}>stop</button>
       <div className="">
         <div className="generation-button-container">
           {PokeDexJSXHelper.renderGenerationButton({
             onClick: handleGenButtonClick,
           })}
-        </div>
-        <div className="music-container">
-          <button onClick={handlePlayPrev}>PREV MUSIC</button>
-          <audio
-            ref={audioRef}
-            src={musics[musicIndex]}
-            controls
-            onEnded={handlePlayNext}
-          />
-          <button onClick={handlePlayNext}>NEXT MUSIC</button>
         </div>
 
         <PokemonCard pokemons={pokemons} onClick={setPokemonSelected} />
