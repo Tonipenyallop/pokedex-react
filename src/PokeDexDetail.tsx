@@ -9,6 +9,7 @@ import {
   SpeciesInfo,
   Language,
   FlavorText,
+  EvolutionChain,
 } from "./type";
 
 const PokeDexDetail = () => {
@@ -96,6 +97,9 @@ const PokeDexDetail = () => {
   // en ja ko
   const [language, setLanguage] = useState<Language>("en");
   const [languageOptions, setLanguageOptions] = useState<Language[]>([]);
+  const [evolutionSprites, setEvolutionSprites] = useState<EvolutionChain[]>(
+    []
+  );
 
   const pokemonService = PokedexService.getInstance();
   useEffect(() => {
@@ -103,20 +107,23 @@ const PokeDexDetail = () => {
       try {
         setIsLoading(true);
         const res = await pokemonService.getPokemonDetails(pokemonId as string);
+        console.log("res", res);
         const res2 = (await pokemonService.getEvolutionChainById(
           pokemonId as string
         )) as SpeciesInfo;
 
+        console.log("res2", res2);
         const set = new Set();
-        res2.flavor_text_entries.forEach((txt) => {
+        res2.flavorText.flavor_text_entries.forEach((txt) => {
           set.add(txt.language.name);
         });
         setLanguageOptions(Array.from(set.values()) as Language[]);
 
         console.log(set);
-        console.log(res2.flavor_text_entries);
+        console.log(res2.flavorText.flavor_text_entries);
 
-        setFlavorTexts(res2.flavor_text_entries);
+        setFlavorTexts(res2.flavorText.flavor_text_entries);
+        setEvolutionSprites(res2.evolutionChain);
 
         console.log(res);
         setPokemonDetail(res);
@@ -152,11 +159,17 @@ const PokeDexDetail = () => {
     }
     const genRange = GEN_GROUPS[genId];
 
-    const nextIndex = (Number(pokemonId) + 1) % genRange[1];
+    console.log("genRange", genRange);
 
-    console.log(nextIndex);
+    let nextIndex = (Number(pokemonId) % genRange[1]) + 1;
+    // to prevent last pokemon of a gen to bulbasour
+    if (nextIndex === 1) {
+      nextIndex = genRange[0];
+    }
+
     navigate(`/detail/${nextIndex.toString()}`);
   }
+
   function handleLeftArrow() {
     console.log("handleLeftArrow was called");
     const genId = localStorage.getItem(GEN_ID_KEY) as GenId;
@@ -212,6 +225,16 @@ const PokeDexDetail = () => {
           <div className="">
             {spritesProps.map((prop) => (
               <img src={pokemonDetail.sprites[prop as Sprite] || ""} alt="" />
+            ))}
+          </div>
+
+          <p>EVOLUTION CHAIN</p>
+          <div className="evolution-chain">
+            {evolutionSprites.map((data) => (
+              <div className="">
+                <img className="" src={data.spriteFront}></img>
+                <p className="evolution-chain-name">{data.name}</p>
+              </div>
             ))}
           </div>
         </div>
