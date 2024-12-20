@@ -50,14 +50,20 @@ export class PokedexService {
     return res.data;
   }
 
-  // remove
-  async getAllPokemonBGMs() {
-    const res = await axios.get(`${this.URL_PATH}/musics`);
+  async getMusicDescriptionByIndex(index: string) {
+    const res = await axios.get(`${this.URL_PATH}/music/${index}`);
     return res.data;
   }
 
   async getAllPokemons() {
     const res = await axios.get(`${this.URL_PATH}/all`);
+    return res.data;
+  }
+
+  async getEvolutionChainById(pokemonId: string) {
+    const res = await axios.get(
+      `${this.URL_PATH}/evolution-chain/${pokemonId}`
+    );
     return res.data;
   }
 }
