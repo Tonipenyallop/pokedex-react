@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 const PokemonCard = ({ pokemons }: PokemonCardProps) => {
   const navigate = useNavigate();
   function handleCardClicked(pokemonId: number) {
-    console.log("clicked!");
-    console.log("pokemonId", pokemonId);
     navigate(`/detail/${pokemonId.toString()}`);
   }
 
