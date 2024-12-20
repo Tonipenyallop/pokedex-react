@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./PokeDex.css";
-import { PokedexService } from "./services/pokedex-service";
+import { pokeDexService, PokeDexServiceType } from "./services/pokedex-service";
 import { GenId, Pokemon } from "./type";
 import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
@@ -12,13 +12,21 @@ const PokeDex = () => {
   const [musicIndex, setMusicIndex] = useState(0);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [youtubeMusics, setYoutubeMusics] = useState([]);
-
-  const pokemonService = PokedexService.getInstance();
+  // music times
+  const [youtubeMusics, setYoutubeMusics] = useState<
+    {
+      startTime: string;
+      name: string;
+    }[]
+  >([]);
 
   const [pokemonSelected, setPokemonSelected] = useState(false);
 
   const playerRef = useRef<YT.Player | null>(null);
+
+  const [pokeDexHelper, setPokeDexHelper] = useState<PokeDexHelper | null>(
+    null
+  );
 
   useEffect(() => {
     // race condition?
@@ -35,13 +43,20 @@ const PokeDex = () => {
               list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
               index: musicIndex,
             });
-            console.log("playerRef", playerRef);
-            console.log("Player ready");
+
+            setPokeDexHelper(
+              new PokeDexHelper({
+                setMusicIndex,
+                setYoutubeMusics,
+                pokeDexService,
+                playerRef,
+              })
+            );
           },
         },
       });
     }, 1000);
-  }, []);
+  }, [pokeDexHelper]);
 
   function handlePlayClick() {
     console.log("playerRef.current", playerRef.current);
@@ -55,36 +70,35 @@ const PokeDex = () => {
       playerRef.current.pauseVideo(); // This actually starts the video
     }
   }
-  function playFromX() {
-    if (playerRef.current) {
-      playerRef.current.seekTo(60, true); // This actually starts the video
-      playerRef.current.playVideo(); // This actually starts the video
+  function playFromX(event: React.MouseEvent<HTMLButtonElement>) {
+    if (!playerRef.current) {
+      return;
     }
+
+    const convertedTime = (
+      pokeDexHelper as PokeDexHelper
+    ).convertMusicStartTime((event.target as HTMLButtonElement).value);
+
+    playerRef.current.seekTo(convertedTime, true);
+    playerRef.current.playVideo();
   }
 
-  function handleNextMusic() {
+  async function handleNextMusic() {
     if (!playerRef.current) {
       return;
     }
     const nextIndex = (musicIndex + 1) % MAX_MUSIC_LEN;
+
     playerRef.current.loadPlaylist({
       list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
       index: nextIndex,
     });
     setMusicIndex(nextIndex);
-    playerRef.current?.playVideo();
-  }
+    const tmp = await pokeDexService.getMusicDescriptionByIndex(
+      nextIndex.toString()
+    );
 
-  function handlePrevMusic() {
-    if (!playerRef.current) {
-      return;
-    }
-    const prevIndex = musicIndex <= 0 ? MAX_MUSIC_LEN - 1 : musicIndex - 1;
-    playerRef.current.loadPlaylist({
-      list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
-      index: prevIndex,
-    });
-    setMusicIndex(prevIndex);
+    setYoutubeMusics(tmp.musicDescription);
     playerRef.current?.playVideo();
   }
 
@@ -95,19 +109,17 @@ const PokeDex = () => {
 
         const pokemons =
           genIdInLocalStorage && genIdInLocalStorage !== "all"
-            ? await pokemonService.getPokemonsByGen(
+            ? await pokeDexService.getPokemonsByGen(
                 genIdInLocalStorage as GenId
               )
-            : await pokemonService.getAllPokemons();
+            : await pokeDexService.getAllPokemons();
 
         setPokemons(pokemons);
 
-        // if i add below cannot render box
-        // get music
-        const tmp = await pokemonService.getAllPokemonBGMs();
-        console.log("tmp", tmp);
-        setYoutubeMusics(tmp);
-        // setYoutubeMusics(tmp.musicDescription);
+        const tmp = await pokeDexService.getMusicDescriptionByIndex(
+          musicIndex.toString()
+        );
+        setYoutubeMusics(tmp.musicDescription);
       } catch (err) {
         console.error(err);
       } finally {
@@ -127,9 +139,9 @@ const PokeDex = () => {
     const generationId = event.currentTarget.value as GenId | "all";
     let pokemons;
     if (generationId === "all") {
-      pokemons = await pokemonService.getAllPokemons();
+      pokemons = await pokeDexService.getAllPokemons();
     } else {
-      pokemons = await pokemonService.getPokemonsByGen(generationId);
+      pokemons = await pokeDexService.getPokemonsByGen(generationId);
     }
 
     setPokemons(pokemons);
@@ -138,10 +150,24 @@ const PokeDex = () => {
 
   return (
     <div className="pokedex-container">
-      <button onClick={handlePrevMusic}>Index MINUS</button>
+      <button
+        value={musicIndex}
+        onClick={(event) =>
+          (pokeDexHelper as PokeDexHelper).handlePrevMusic(event)
+        }
+      >
+        Index MINUS
+      </button>
       <div id="player"></div>
       <button onClick={handleNextMusic}>Index PLUS</button>
-
+      {youtubeMusics.length > 0 &&
+        youtubeMusics.map((musicObj) => {
+          return (
+            <button value={musicObj.startTime} onClick={playFromX}>
+              {musicObj.name}
+            </button>
+          );
+        })}
       <button onClick={playFromX}>XX</button>
 
       <button onClick={handlePlayClick}>play</button>
