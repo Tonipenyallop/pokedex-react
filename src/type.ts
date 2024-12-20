@@ -97,8 +97,13 @@ export type FlavorText = {
 };
 
 export type SpeciesInfo = {
-  evolution_chain: string;
-  flavor_text_entries: FlavorText[];
+  evolutionChain: EvolutionChain[];
+  flavorText: { flavor_text_entries: FlavorText[] };
+};
+
+export type EvolutionChain = {
+  name: string;
+  spriteFront: string;
 };
 
 export type Language =
