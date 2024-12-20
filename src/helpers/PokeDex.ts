@@ -1,43 +1,23 @@
-import { BGM_MAX_NUM_IDX } from "../constants";
-
 export class PokeDexHelper {
-  musicIndex: number;
-  setMusicIndex: React.Dispatch<React.SetStateAction<number>>;
-  audioRef: React.RefObject<HTMLAudioElement>;
-  constructor({
-    musicIndex,
-    setMusicIndex,
-    audioRef,
-  }: {
-    musicIndex: number;
-    setMusicIndex: React.Dispatch<React.SetStateAction<number>>;
-    audioRef: React.RefObject<HTMLAudioElement>;
-  }) {
-    this.musicIndex = musicIndex;
-    this.setMusicIndex = setMusicIndex;
-    this.audioRef = audioRef;
-  }
+  public convertMusicStartTime(time: string): number {
+    const timeArr = time.split(":");
+    let hour: number;
+    let min: number;
+    let sec: number;
+    if (timeArr.length === 3) {
+      // time is hour long
+      hour = Number(timeArr[0]);
+      min = Number(timeArr[1]);
+      sec = Number(timeArr[2]);
 
-  public playNextMusic() {
-    const newIdx = (this.musicIndex + 1) % BGM_MAX_NUM_IDX;
-    this.setMusicIndex(newIdx);
-    setTimeout(() => {
-      if (this.audioRef.current === null) {
-        return;
-      }
-      this.audioRef.current.play();
-    }, 1000);
-  }
+      return hour * 60 * 60 + min * 60 + sec;
+    } else if (timeArr.length == 2) {
+      // time is min long
+      min = Number(timeArr[0]);
+      sec = Number(timeArr[1]);
+      return min * 60 + sec;
+    }
 
-  public playPrevMusic() {
-    const newIdx =
-      this.musicIndex === 0 ? BGM_MAX_NUM_IDX - 1 : this.musicIndex - 1;
-    this.setMusicIndex(newIdx);
-    setTimeout(() => {
-      if (this.audioRef.current === null) {
-        return;
-      }
-      this.audioRef.current.play();
-    }, 1000);
+    return 0;
   }
 }
