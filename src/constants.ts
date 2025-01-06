@@ -1,3 +1,5 @@
+import { Pokemon } from "./type";
+
 export const GENERATIONS = [
   { genId: "all", title: "ALL" },
   { genId: "first", title: "FIRST" },
@@ -26,4 +28,77 @@ export const GEN_GROUPS = {
   ninth: [906, 1025],
 };
 
+export const MAX_MUSIC_LEN = 5;
+
 export const GEN_ID_KEY = "gen-id-key";
+
+export const INITIAL_POKEMON_STATE: Pokemon = {
+  abilities: [
+    {
+      ability: {
+        name: "",
+        url: "",
+      },
+      is_hidden: false,
+      slot: 0,
+    },
+  ],
+  cries: {
+    latest: "",
+    legacy: "",
+  },
+  forms: [
+    {
+      name: "",
+      url: "",
+    },
+  ],
+  height: 0,
+  id: 0,
+  moves: [
+    {
+      move: {
+        name: "",
+        url: "",
+      },
+      version_group_details: [
+        {
+          level_learned_at: 0,
+          move_learn_method: {
+            name: "",
+            url: "",
+          },
+          version_group: {
+            name: "",
+            url: "",
+          },
+        },
+      ],
+    },
+  ],
+  name: "",
+  species: {
+    name: "",
+    url: "",
+  },
+  sprites: {
+    back_default: null,
+    back_female: null,
+    back_shiny: null,
+    back_shiny_female: null,
+    front_default: null,
+    front_female: null,
+    front_shiny: null,
+    front_shiny_female: null,
+  },
+  types: [
+    {
+      slot: 0,
+      type: {
+        name: "",
+        url: "",
+      },
+    },
+  ],
+  weight: 0,
+};
