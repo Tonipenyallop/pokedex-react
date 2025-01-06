@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
-import { PokedexService } from "./services/pokedex-service";
+import { pokeDexService } from "./services/pokedex-service";
 import { useEffect, useState } from "react";
-import { GEN_GROUPS, GEN_ID_KEY } from "./constants";
+import { GEN_GROUPS, GEN_ID_KEY, INITIAL_POKEMON_STATE } from "./constants";
 import {
   GenId,
   Pokemon,
@@ -18,77 +18,9 @@ const PokeDexDetail = () => {
     throw new Error("pokemonId from param is empty");
   }
 
-  //   Can we do better?
-  const [pokemonDetail, setPokemonDetail] = useState<Pokemon>({
-    abilities: [
-      {
-        ability: {
-          name: "",
-          url: "",
-        },
-        is_hidden: false,
-        slot: 0,
-      },
-    ],
-    cries: {
-      latest: "",
-      legacy: "",
-    },
-    forms: [
-      {
-        name: "",
-        url: "",
-      },
-    ],
-    height: 0,
-    id: 0,
-    moves: [
-      {
-        move: {
-          name: "",
-          url: "",
-        },
-        version_group_details: [
-          {
-            level_learned_at: 0,
-            move_learn_method: {
-              name: "",
-              url: "",
-            },
-            version_group: {
-              name: "",
-              url: "",
-            },
-          },
-        ],
-      },
-    ],
-    name: "",
-    species: {
-      name: "",
-      url: "",
-    },
-    sprites: {
-      back_default: null,
-      back_female: null,
-      back_shiny: null,
-      back_shiny_female: null,
-      front_default: null,
-      front_female: null,
-      front_shiny: null,
-      front_shiny_female: null,
-    },
-    types: [
-      {
-        slot: 0,
-        type: {
-          name: "",
-          url: "",
-        },
-      },
-    ],
-    weight: 0,
-  });
+  const [pokemonDetail, setPokemonDetail] = useState<Pokemon>(
+    INITIAL_POKEMON_STATE
+  );
 
   const navigate = useNavigate();
 
@@ -101,32 +33,27 @@ const PokeDexDetail = () => {
     []
   );
 
-  const pokemonService = PokedexService.getInstance();
   useEffect(() => {
     async function getPokemonDetail() {
       try {
         setIsLoading(true);
-        const res = await pokemonService.getPokemonDetails(pokemonId as string);
-        console.log("res", res);
-        const res2 = (await pokemonService.getEvolutionChainById(
+        const res = await pokeDexService.getPokemonDetails(pokemonId as string);
+        const res2 = (await pokeDexService.getEvolutionChainById(
           pokemonId as string
         )) as SpeciesInfo;
 
-        console.log("res2", res2);
         const set = new Set();
         res2.flavorText.flavor_text_entries.forEach((txt) => {
           set.add(txt.language.name);
         });
         setLanguageOptions(Array.from(set.values()) as Language[]);
 
-        console.log(set);
-        console.log(res2.flavorText.flavor_text_entries);
-
         setFlavorTexts(res2.flavorText.flavor_text_entries);
         setEvolutionSprites(res2.evolutionChain);
 
-        console.log(res);
         setPokemonDetail(res);
+
+        await getPokemonSprites(res.sprites);
       } catch (err) {
         console.error("failed to fetch pokemon", err);
       } finally {
@@ -147,6 +74,23 @@ const PokeDexDetail = () => {
     "back_shiny_female",
   ];
 
+  // pre-load pokemon sprite
+  async function getPokemonSprites(sprites: Record<string, string | null>) {
+    const promises = Object.values(sprites)
+      .filter((prop) => prop !== null)
+      .map((prop) => {
+        const image = new Image();
+        image.src = prop as string;
+
+        return new Promise((resolve) => {
+          image.onload = resolve;
+          image.onerror = resolve;
+        });
+      });
+
+    await Promise.all(promises);
+  }
+
   function handleHome() {
     navigate("/");
   }
@@ -158,8 +102,6 @@ const PokeDexDetail = () => {
       throw new Error("genId in localStorage is empty");
     }
     const genRange = GEN_GROUPS[genId];
-
-    console.log("genRange", genRange);
 
     let nextIndex = (Number(pokemonId) % genRange[1]) + 1;
     // to prevent last pokemon of a gen to bulbasour
@@ -177,7 +119,6 @@ const PokeDexDetail = () => {
       throw new Error("genId in localStorage is empty");
     }
     const genRange = GEN_GROUPS[genId];
-    console.log("genRange", genRange);
     const nextIndex =
       genRange[0] - Number(pokemonId) === 0
         ? genRange[1]
@@ -223,9 +164,13 @@ const PokeDexDetail = () => {
             </div>
           </div>
           <div className="">
-            {spritesProps.map((prop) => (
-              <img src={pokemonDetail.sprites[prop as Sprite] || ""} alt="" />
-            ))}
+            {spritesProps.map((prop) => {
+              const spriteURL = pokemonDetail.sprites[prop as Sprite] || "";
+              if (!spriteURL) {
+                return null;
+              }
+              return <img src={spriteURL} alt="" />;
+            })}
           </div>
 
           <p>EVOLUTION CHAIN</p>
