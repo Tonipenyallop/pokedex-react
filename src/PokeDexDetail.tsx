@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { pokeDexService } from "./services/pokedex-service";
 import { useEffect, useState } from "react";
 import { GEN_GROUPS, GEN_ID_KEY, INITIAL_POKEMON_STATE } from "./constants";
+import Loading from "./Loading";
 import {
   GenId,
   Pokemon,
@@ -91,6 +92,8 @@ const PokeDexDetail = () => {
     await Promise.all(promises);
   }
 
+  // pre-load evolution chain
+
   function handleHome() {
     navigate("/");
   }
@@ -129,7 +132,7 @@ const PokeDexDetail = () => {
   }
 
   if (isLoading) {
-    return;
+    return <Loading />;
   }
 
   return (
