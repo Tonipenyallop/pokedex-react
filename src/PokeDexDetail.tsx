@@ -1,7 +1,12 @@
 import { useNavigate, useParams } from "react-router";
 import { pokeDexService } from "./services/pokedex-service";
 import { useEffect, useState } from "react";
-import { GEN_GROUPS, GEN_ID_KEY, INITIAL_POKEMON_STATE } from "./constants";
+import {
+  GEN_GROUPS,
+  GEN_ID_KEY,
+  INITIAL_POKEMON_STATE,
+  SPRITES_PROPS,
+} from "./constants";
 import Loading from "./Loading";
 import {
   GenId,
@@ -12,6 +17,7 @@ import {
   FlavorText,
   EvolutionChain,
 } from "./type";
+import { pokeDexDetailHelper } from "./helpers/PokeDexDetail";
 
 const PokeDexDetail = () => {
   const { pokemonId } = useParams();
@@ -47,14 +53,24 @@ const PokeDexDetail = () => {
         res2.flavorText.flavor_text_entries.forEach((txt) => {
           set.add(txt.language.name);
         });
-        setLanguageOptions(Array.from(set.values()) as Language[]);
+
+        setLanguageOptions(
+          (Array.from(set.values()) as string[]).sort((a, b) =>
+            a.localeCompare(b)
+          ) as Language[]
+        );
 
         setFlavorTexts(res2.flavorText.flavor_text_entries);
         setEvolutionSprites(res2.evolutionChain);
 
         setPokemonDetail(res);
 
-        await getPokemonSprites(res.sprites);
+        await pokeDexDetailHelper.preLoadImages(Object.values(res.sprites));
+        const evolutionChainUrls = res2.evolutionChain.map(
+          (evolutionChain) => evolutionChain.spriteFront
+        );
+
+        await pokeDexDetailHelper.preLoadImages(evolutionChainUrls);
       } catch (err) {
         console.error("failed to fetch pokemon", err);
       } finally {
@@ -63,36 +79,6 @@ const PokeDexDetail = () => {
     }
     getPokemonDetail();
   }, [pokemonId]);
-
-  const spritesProps = [
-    "front_default",
-    "back_default",
-    "front_shiny",
-    "back_shiny",
-    "front_female",
-    "back_female",
-    "front_shiny_female",
-    "back_shiny_female",
-  ];
-
-  // pre-load pokemon sprite
-  async function getPokemonSprites(sprites: Record<string, string | null>) {
-    const promises = Object.values(sprites)
-      .filter((prop) => prop !== null)
-      .map((prop) => {
-        const image = new Image();
-        image.src = prop as string;
-
-        return new Promise((resolve) => {
-          image.onload = resolve;
-          image.onerror = resolve;
-        });
-      });
-
-    await Promise.all(promises);
-  }
-
-  // pre-load evolution chain
 
   function handleHome() {
     navigate("/");
@@ -155,7 +141,7 @@ const PokeDexDetail = () => {
             </div>
 
             <div className="">
-              <div className="">legacy</div>
+              <div className="">Legacy</div>
 
               <audio controls>
                 <source
@@ -167,19 +153,23 @@ const PokeDexDetail = () => {
             </div>
           </div>
           <div className="">
-            {spritesProps.map((prop) => {
+            {SPRITES_PROPS.map((prop) => {
               const spriteURL = pokemonDetail.sprites[prop as Sprite] || "";
               if (!spriteURL) {
                 return null;
               }
-              return <img src={spriteURL} alt="" />;
+              return <img key={spriteURL} src={spriteURL} alt="" />;
             })}
           </div>
 
           <p>EVOLUTION CHAIN</p>
           <div className="evolution-chain">
             {evolutionSprites.map((data) => (
-              <div className="">
+              <div
+                key={data.id}
+                className=""
+                onClick={() => navigate(`/detail/${data.id.toString()}`)}
+              >
                 <img className="" src={data.spriteFront}></img>
                 <p className="evolution-chain-name">{data.name}</p>
               </div>
@@ -192,29 +182,26 @@ const PokeDexDetail = () => {
       <div className="language-container">
         {languageOptions.map((label) => (
           <button
+            key={label}
             value={label}
             onClick={(e) => {
               console.log("e.target", e.target.value);
               setLanguage(e.target.value);
             }}
           >
-            {label}/{}
+            {label}
           </button>
         ))}
       </div>
       <div className="flavor-text-container">
-        {/* pokemon-species api -> flavor text */}
-
         {flavorTexts
           .filter((text) => text.language.name === language)
-          .map((text) => (
-            <div className="flavor-text">
+          .map((text, idx) => (
+            <div className="flavor-text" key={`${text.language}-${idx}`}>
               <div className="version-name">{text.version.name}</div>
               <div className="">{text.flavor_text}</div>
             </div>
           ))}
-
-        {/* evolution-chain api ->  */}
       </div>
     </div>
   );
