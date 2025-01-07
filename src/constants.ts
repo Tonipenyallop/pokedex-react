@@ -102,3 +102,14 @@ export const INITIAL_POKEMON_STATE: Pokemon = {
   ],
   weight: 0,
 };
+
+export const SPRITES_PROPS = [
+  "front_default",
+  "back_default",
+  "front_shiny",
+  "back_shiny",
+  "front_female",
+  "back_female",
+  "front_shiny_female",
+  "back_shiny_female",
+];
