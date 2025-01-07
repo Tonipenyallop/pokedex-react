@@ -1,8 +1,8 @@
 import axios from "axios";
 import { GenId, Pokemon } from "../type";
 
-export class PokedexService {
-  private static instance: PokedexService;
+class PokeDexService {
+  private static instance: PokeDexService;
   private URL_PATH: string;
 
   private constructor() {
@@ -10,10 +10,10 @@ export class PokedexService {
   }
 
   public static getInstance() {
-    if (!PokedexService.instance) {
-      PokedexService.instance = new PokedexService();
+    if (!PokeDexService.instance) {
+      PokeDexService.instance = new PokeDexService();
     }
-    return PokedexService.instance;
+    return PokeDexService.instance;
   }
 
   async getPokemons() {
@@ -67,3 +67,7 @@ export class PokedexService {
     return res.data;
   }
 }
+
+export const pokeDexService = PokeDexService.getInstance();
+
+export type PokeDexServiceType = typeof pokeDexService;
