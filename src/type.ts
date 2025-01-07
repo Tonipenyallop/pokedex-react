@@ -102,6 +102,7 @@ export type SpeciesInfo = {
 };
 
 export type EvolutionChain = {
+  id: string;
   name: string;
   spriteFront: string;
 };
