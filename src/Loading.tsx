@@ -1,4 +1,3 @@
-import React from "react";
 import Pokeball from "./Pokeball";
 
 const Loading = () => {
