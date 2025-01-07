@@ -6,6 +6,7 @@ import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
 import PokemonCard from "./PokemonCard.tsx";
 import { GEN_ID_KEY, MAX_MUSIC_LEN } from "./constants.ts";
+import Loading from "./Loading.tsx";
 
 const PokeDex = () => {
   // pallet town music
@@ -130,7 +131,7 @@ const PokeDex = () => {
   }, []);
 
   if (isLoading) {
-    return;
+    return <Loading />;
   }
 
   async function handleGenButtonClick(
