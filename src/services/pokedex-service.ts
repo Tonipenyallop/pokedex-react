@@ -11,9 +11,10 @@ class PokeDexService {
       import.meta.env.VITE_URL_PATH
     );
 
-    // taesu comment out this value for dev env
     this.URL_PATH =
-      import.meta.env.VITE_URL_PATH || "http://localhost:8080/pokemon";
+      import.meta.env.MODE === "development"
+        ? "http://localhost:8080/pokemon"
+        : import.meta.env.VITE_URL_PATH;
   }
 
   public static getInstance() {
