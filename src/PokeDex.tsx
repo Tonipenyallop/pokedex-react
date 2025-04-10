@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./PokeDex.css";
-import { pokeDexService, PokeDexServiceType } from "./services/pokedex-service";
+import { pokeDexService } from "./services/pokedex-service";
 import { GenId, Pokemon } from "./type";
 import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
@@ -21,7 +21,8 @@ const PokeDex = () => {
     }[]
   >([]);
 
-  const [pokemonSelected, setPokemonSelected] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_pokemonSelected, setPokemonSelected] = useState(false);
 
   const playerRef = useRef<YT.Player | null>(null);
 

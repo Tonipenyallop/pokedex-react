@@ -26,7 +26,11 @@ const PokemonCard = ({ pokemons }: PokemonCardProps) => {
             </div>
           </div>
 
-          <img src={pokemon.sprites.front_default || ""} alt="" />
+          <img
+            loading="lazy"
+            src={pokemon.sprites.front_default || ""}
+            alt=""
+          />
         </div>
       ))}
     </div>

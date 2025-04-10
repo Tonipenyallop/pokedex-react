@@ -58,3 +58,30 @@ export default tseslint.config({
   },
 });
 ```
+
+### Youtube API
+
+- Needs to add useRef to onReady event.target
+- Somehow timeout 1second solved the race condition of displaying iframe
+
+### Docker
+
+```
+docker run -p 7777:7777 --network=pokedex-network --name pokedex-frontend pokedex-react
+```
+
+### NOTE
+
+- By default, docker connects with ipv4
+
+```
+127.0.0.1:7777
+```
+
+### Env value
+
+- Since this is not a react app, use `VITE_` prefix for retrieve the value
+
+## Nginx.conf
+
+- Requires nginx but don't know why. Needs to ask shanti

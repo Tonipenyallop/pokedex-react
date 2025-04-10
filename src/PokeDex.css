@@ -141,3 +141,10 @@
   top: 60%;
   left: 51.3%;
 }
+
+.first-detail-container {
+  display: flex;
+}
+.first-detail-image {
+  width: 115px;
+}

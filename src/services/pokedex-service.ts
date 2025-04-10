@@ -6,7 +6,14 @@ class PokeDexService {
   private URL_PATH: string;
 
   private constructor() {
-    this.URL_PATH = "http://localhost:8080/pokemon";
+    console.log(
+      "import.meta.env.VITE_URL_PATH is",
+      import.meta.env.VITE_URL_PATH
+    );
+
+    // taesu comment out this value for dev env
+    this.URL_PATH =
+      import.meta.env.VITE_URL_PATH || "http://localhost:8080/pokemon";
   }
 
   public static getInstance() {

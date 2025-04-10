@@ -80,6 +80,6 @@ export class PokeDexHelper {
     );
 
     this.setYoutubeMusics(tmp.musicDescription);
-    this.playerRef.current?.playVideo();
+    this.playerRef.current.playVideo();
   }
 }

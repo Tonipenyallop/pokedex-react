@@ -153,7 +153,28 @@ const PokeDexDetail = () => {
             </div>
           </div>
           <div className="">
-            {SPRITES_PROPS.map((prop) => {
+            <div className="first-detail-container">
+              <img
+                className="first-detail-image"
+                key={
+                  pokemonDetail.sprites[
+                    SPRITES_PROPS[0] as keyof typeof pokemonDetail.sprites
+                  ]
+                }
+                src={
+                  pokemonDetail.sprites[
+                    SPRITES_PROPS[0] as keyof typeof pokemonDetail.sprites
+                  ] as string
+                }
+                alt=""
+              />
+              <div className="">
+                <p className="">{pokemonDetail.name}</p>
+                <p>{pokemonDetail.types[0].type.name}</p>
+                {/* <p>{pokemonDetail.types?.[1].type.name}</p> */}
+              </div>
+            </div>
+            {SPRITES_PROPS.slice(1).map((prop) => {
               const spriteURL = pokemonDetail.sprites[prop as Sprite] || "";
               if (!spriteURL) {
                 return null;
@@ -184,9 +205,11 @@ const PokeDexDetail = () => {
           <button
             key={label}
             value={label}
-            onClick={(e) => {
-              console.log("e.target", e.target.value);
-              setLanguage(e.target.value);
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              const value = (e.target as HTMLInputElement).value;
+
+              console.log("value", value);
+              setLanguage(value as Language);
             }}
           >
             {label}
