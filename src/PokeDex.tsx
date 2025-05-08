@@ -152,7 +152,7 @@ const PokeDex = () => {
 
   return (
     <div className="pokedex-container">
-      <button
+      {/* <button
         value={musicIndex}
         onClick={(event) =>
           (pokeDexHelper as PokeDexHelper).handlePrevMusic(event)
@@ -160,9 +160,9 @@ const PokeDex = () => {
       >
         Index MINUS
       </button>
-      <div id="player"></div>
-      <button onClick={handleNextMusic}>Index PLUS</button>
-      {youtubeMusics.length > 0 &&
+      <div id="player"></div> */}
+      {/* <button onClick={handleNextMusic}>Index PLUS</button> */}
+      {/* {youtubeMusics.length > 0 &&
         youtubeMusics.map((musicObj) => {
           return (
             <button value={musicObj.startTime} onClick={playFromX}>
@@ -173,7 +173,7 @@ const PokeDex = () => {
       <button onClick={playFromX}>XX</button>
 
       <button onClick={handlePlayClick}>play</button>
-      <button onClick={stopPlaying}>stop</button>
+      <button onClick={stopPlaying}>stop</button> */}
       <div className="">
         <div className="generation-button-container">
           {PokeDexJSXHelper.renderGenerationButton({
