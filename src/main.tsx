@@ -5,6 +5,8 @@ import PokeDex from "./PokeDex.tsx";
 import PokeDexDetail from "./PokeDexDetail.tsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+document.title = "Pokedex";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
