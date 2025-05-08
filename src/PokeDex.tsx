@@ -1,108 +1,110 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react"; // useRef
 import "./PokeDex.css";
 import { pokeDexService } from "./services/pokedex-service";
 import { GenId, Pokemon } from "./type";
-import { PokeDexHelper } from "./helpers/PokeDex.ts";
+// import { PokeDexHelper } from "./helpers/PokeDex.ts";
 import { PokeDexJSXHelper } from "./helpers/PokeDex.tsx";
 import PokemonCard from "./PokemonCard.tsx";
-import { GEN_ID_KEY, MAX_MUSIC_LEN } from "./constants.ts";
+
+import { GEN_ID_KEY } from "./constants.ts"; // MAX_MUSIC_LEN
 import Loading from "./Loading.tsx";
 
 const PokeDex = () => {
   // pallet town music
-  const [musicIndex, setMusicIndex] = useState(0);
+  // const [musicIndex, setMusicIndex] = useState(0);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   // music times
-  const [youtubeMusics, setYoutubeMusics] = useState<
-    {
-      startTime: string;
-      name: string;
-    }[]
-  >([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const [youtubeMusics, setYoutubeMusics] = useState<
+  //   {
+  //     startTime: string;
+  //     name: string;
+  //   }[]
+  // >([]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_pokemonSelected, setPokemonSelected] = useState(false);
 
-  const playerRef = useRef<YT.Player | null>(null);
+  // const playerRef = useRef<YT.Player | null>(null);
 
-  const [pokeDexHelper, setPokeDexHelper] = useState<PokeDexHelper | null>(
-    null
-  );
+  // const [pokeDexHelper, setPokeDexHelper] = useState<PokeDexHelper | null>(
+  //   null
+  // );
 
-  useEffect(() => {
-    // race condition?
-    setTimeout(() => {
-      console.log("onYouTubeIframeAPIReady event");
-      new window.YT.Player("player", {
-        playerVars: {
-          listType: "playlist",
-        },
-        events: {
-          onReady: (event) => {
-            playerRef.current = event.target; // Fully initialized player
-            playerRef.current?.loadPlaylist({
-              list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
-              index: musicIndex,
-            });
+  // useEffect(() => {
+  //   // race condition?
+  //   setTimeout(() => {
+  //     console.log("onYouTubeIframeAPIReady event");
+  //     new window.YT.Player("player", {
+  //       playerVars: {
+  //         listType: "playlist",
+  //       },
+  //       events: {
+  //         onReady: (event) => {
+  //           playerRef.current = event.target; // Fully initialized player
+  //           playerRef.current?.loadPlaylist({
+  //             list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
+  //             index: musicIndex,
+  //           });
 
-            setPokeDexHelper(
-              new PokeDexHelper({
-                setMusicIndex,
-                setYoutubeMusics,
-                pokeDexService,
-                playerRef,
-              })
-            );
-          },
-        },
-      });
-    }, 1000);
-  }, [pokeDexHelper]);
+  //           setPokeDexHelper(
+  //             new PokeDexHelper({
+  //               setMusicIndex,
+  //               setYoutubeMusics,
+  //               pokeDexService,
+  //               playerRef,
+  //             })
+  //           );
+  //         },
+  //       },
+  //     });
+  //   }, 1000);
+  // }, [pokeDexHelper]);
 
-  function handlePlayClick() {
-    console.log("playerRef.current", playerRef.current);
-    if (playerRef.current) {
-      playerRef.current.playVideo(); // This actually starts the video
-    }
-  }
+  // function handlePlayClick() {
+  //   console.log("playerRef.current", playerRef.current);
+  //   if (playerRef.current) {
+  //     playerRef.current.playVideo(); // This actually starts the video
+  //   }
+  // }
 
-  function stopPlaying() {
-    if (playerRef.current) {
-      playerRef.current.pauseVideo(); // This actually starts the video
-    }
-  }
-  function playFromX(event: React.MouseEvent<HTMLButtonElement>) {
-    if (!playerRef.current) {
-      return;
-    }
+  // function stopPlaying() {
+  //   if (playerRef.current) {
+  //     playerRef.current.pauseVideo(); // This actually starts the video
+  //   }
+  // }
+  // function playFromX(event: React.MouseEvent<HTMLButtonElement>) {
+  //   if (!playerRef.current) {
+  //     return;
+  //   }
 
-    const convertedTime = (
-      pokeDexHelper as PokeDexHelper
-    ).convertMusicStartTime((event.target as HTMLButtonElement).value);
+  //   const convertedTime = (
+  //     pokeDexHelper as PokeDexHelper
+  //   ).convertMusicStartTime((event.target as HTMLButtonElement).value);
 
-    playerRef.current.seekTo(convertedTime, true);
-    playerRef.current.playVideo();
-  }
+  //   playerRef.current.seekTo(convertedTime, true);
+  //   playerRef.current.playVideo();
+  // }
 
-  async function handleNextMusic() {
-    if (!playerRef.current) {
-      return;
-    }
-    const nextIndex = (musicIndex + 1) % MAX_MUSIC_LEN;
+  // async function handleNextMusic() {
+  //   if (!playerRef.current) {
+  //     return;
+  //   }
+  //   const nextIndex = (musicIndex + 1) % MAX_MUSIC_LEN;
 
-    playerRef.current.loadPlaylist({
-      list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
-      index: nextIndex,
-    });
-    setMusicIndex(nextIndex);
-    const tmp = await pokeDexService.getMusicDescriptionByIndex(
-      nextIndex.toString()
-    );
+  //   playerRef.current.loadPlaylist({
+  //     list: "PL2Hh8Ce3B0ObkyQr65oyCMaqnE6HfqoIg",
+  //     index: nextIndex,
+  //   });
+  //   setMusicIndex(nextIndex);
+  //   const tmp = await pokeDexService.getMusicDescriptionByIndex(
+  //     nextIndex.toString()
+  //   );
 
-    setYoutubeMusics(tmp.musicDescription);
-    playerRef.current?.playVideo();
-  }
+  //   setYoutubeMusics(tmp.musicDescription);
+  //   playerRef.current?.playVideo();
+  // }
 
   useEffect(() => {
     const fetchPokemons = async () => {
@@ -118,10 +120,10 @@ const PokeDex = () => {
 
         setPokemons(pokemons);
 
-        const tmp = await pokeDexService.getMusicDescriptionByIndex(
-          musicIndex.toString()
-        );
-        setYoutubeMusics(tmp.musicDescription);
+        // const tmp = await pokeDexService.getMusicDescriptionByIndex(
+        //   musicIndex.toString()
+        // );
+        // setYoutubeMusics(tmp.musicDescription);
       } catch (err) {
         console.error(err);
       } finally {
