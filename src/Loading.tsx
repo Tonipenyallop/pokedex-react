@@ -2,7 +2,7 @@ import Pokeball from "./Pokeball";
 
 const Loading = () => {
   return (
-    <div>
+    <div className="loading-container">
       <Pokeball />
       <p className="loading-text">Loading ...</p>
     </div>
