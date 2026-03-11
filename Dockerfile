@@ -8,7 +8,6 @@ COPY . ./
 
 # Accept VITE_URL_PATH as a build argument
 ARG VITE_URL_PATH
-ENV VITE_URL_PATH=${VITE_URL_PATH}
 
 # Build the frontend
 RUN npm run build
