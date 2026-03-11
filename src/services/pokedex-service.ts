@@ -6,15 +6,7 @@ class PokeDexService {
   private URL_PATH: string;
 
   private constructor() {
-    console.log(
-      "import.meta.env.VITE_URL_PATH is",
-      import.meta.env.VITE_URL_PATH
-    );
-
-    this.URL_PATH =
-      import.meta.env.MODE === "development"
-        ? "http://localhost:8080/pokemon"
-        : import.meta.env.VITE_URL_PATH;
+    this.URL_PATH = "/pokemon";
   }
 
   public static getInstance() {
@@ -25,13 +17,11 @@ class PokeDexService {
   }
 
   async getPokemons() {
-    console.log("getPokemons was called");
     try {
       const res = await axios.get(`${this.URL_PATH}`);
       if (!res) {
         throw new Error("failed to fetch pokemon");
       }
-      console.log("res.data", res.data.results);
       return res.data.results;
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -40,7 +30,7 @@ class PokeDexService {
             err.response
               ? `Status ${err.response.status} - ${err.response.statusText}`
               : err.message
-          }`
+          }`,
         );
       } else {
         throw new Error(`unknown error happened: ${err}`);
@@ -58,11 +48,6 @@ class PokeDexService {
     return res.data;
   }
 
-  async getMusicDescriptionByIndex(index: string) {
-    const res = await axios.get(`${this.URL_PATH}/music/${index}`);
-    return res.data;
-  }
-
   async getAllPokemons() {
     const res = await axios.get(`${this.URL_PATH}/all`);
     return res.data;
@@ -70,7 +55,7 @@ class PokeDexService {
 
   async getEvolutionChainById(pokemonId: string) {
     const res = await axios.get(
-      `${this.URL_PATH}/evolution-chain/${pokemonId}`
+      `${this.URL_PATH}/evolution-chain/${pokemonId}`,
     );
     return res.data;
   }
