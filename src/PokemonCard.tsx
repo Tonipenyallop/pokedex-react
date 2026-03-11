@@ -13,24 +13,32 @@ const PokemonCard = ({ pokemons }: PokemonCardProps) => {
         <div
           className="pokemon-card"
           key={pokemon.name}
+          data-type={pokemon.types[0].type.name}
           onClick={() => handleCardClicked(pokemon.id)}
-          defaultValue={pokemon.id}
         >
-          <div className="pokemon-info-container">
-            <div className="">{pokemon.name}</div>
-            <div className="type-container">
-              <div className="type">{pokemon.types[0].type.name}</div>
-              <div className="type">
-                {pokemon.types[1] && pokemon.types[1].type.name}
-              </div>
-            </div>
-          </div>
-
+          <span className="pokemon-id">
+            #{String(pokemon.id).padStart(3, "0")}
+          </span>
           <img
+            className="pokemon-sprite"
             loading="lazy"
             src={pokemon.sprites.front_default || ""}
-            alt=""
+            alt={pokemon.name}
           />
+          <div className="pokemon-name">{pokemon.name}</div>
+          <div className="type-container">
+            <span className="type-badge" data-type={pokemon.types[0].type.name}>
+              {pokemon.types[0].type.name}
+            </span>
+            {pokemon.types[1] && (
+              <span
+                className="type-badge"
+                data-type={pokemon.types[1].type.name}
+              >
+                {pokemon.types[1].type.name}
+              </span>
+            )}
+          </div>
         </div>
       ))}
     </div>

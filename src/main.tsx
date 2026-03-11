@@ -4,16 +4,19 @@ import "./index.css";
 import PokeDex from "./PokeDex.tsx";
 import PokeDexDetail from "./PokeDexDetail.tsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-document.title = "Pokedex";
+import { IconMdiPokeball } from "./Pokeball.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
+      <header className="app-header">
+        <IconMdiPokeball />
+        <span className="app-header-title">Pokedex</span>
+      </header>
       <Routes>
         <Route path="/" element={<PokeDex />}></Route>
         <Route path="/detail/:pokemonId" element={<PokeDexDetail />}></Route>
       </Routes>
     </BrowserRouter>
-  </StrictMode>
+  </StrictMode>,
 );

@@ -1,0 +1,165 @@
+:root {
+  /* Pokemon type colors */
+  --type-normal: #a8a77a;
+  --type-fire: #ee8130;
+  --type-water: #6390f0;
+  --type-electric: #f7d02c;
+  --type-grass: #7ac74c;
+  --type-ice: #96d9d6;
+  --type-fighting: #c22e28;
+  --type-poison: #a33ea1;
+  --type-ground: #e2bf65;
+  --type-flying: #a98ff3;
+  --type-psychic: #f95587;
+  --type-bug: #a6b91a;
+  --type-rock: #b6a136;
+  --type-ghost: #735797;
+  --type-dragon: #6f35fc;
+  --type-dark: #705746;
+  --type-steel: #b7b7ce;
+  --type-fairy: #d685ad;
+
+  /* App palette */
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --accent: #dc2626;
+  --accent-dark: #b91c1c;
+  --border: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+  /* Border radius */
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Body ── */
+body {
+  font-family: var(--font-family);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── App Header ── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-dark) 100%
+  );
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.app-header svg {
+  width: 28px;
+  height: 28px;
+}
+
+.app-header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ── Type Badges ── */
+.type-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
+
+.type-badge[data-type="normal"] {
+  background: var(--type-normal);
+}
+.type-badge[data-type="fire"] {
+  background: var(--type-fire);
+}
+.type-badge[data-type="water"] {
+  background: var(--type-water);
+}
+.type-badge[data-type="electric"] {
+  background: var(--type-electric);
+  color: #1e293b;
+}
+.type-badge[data-type="grass"] {
+  background: var(--type-grass);
+}
+.type-badge[data-type="ice"] {
+  background: var(--type-ice);
+  color: #1e293b;
+}
+.type-badge[data-type="fighting"] {
+  background: var(--type-fighting);
+}
+.type-badge[data-type="poison"] {
+  background: var(--type-poison);
+}
+.type-badge[data-type="ground"] {
+  background: var(--type-ground);
+  color: #1e293b;
+}
+.type-badge[data-type="flying"] {
+  background: var(--type-flying);
+}
+.type-badge[data-type="psychic"] {
+  background: var(--type-psychic);
+}
+.type-badge[data-type="bug"] {
+  background: var(--type-bug);
+}
+.type-badge[data-type="rock"] {
+  background: var(--type-rock);
+}
+.type-badge[data-type="ghost"] {
+  background: var(--type-ghost);
+}
+.type-badge[data-type="dragon"] {
+  background: var(--type-dragon);
+}
+.type-badge[data-type="dark"] {
+  background: var(--type-dark);
+}
+.type-badge[data-type="steel"] {
+  background: var(--type-steel);
+  color: #1e293b;
+}
+.type-badge[data-type="fairy"] {
+  background: var(--type-fairy);
+}

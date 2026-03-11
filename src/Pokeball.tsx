@@ -1,8 +1,8 @@
+import React from "react";
+
 // By: mdi
 // See: https://v0.app/icon/mdi/pokeball
-// Example: <IconMdiPokeball width="24px" height="24px" style={{color: "#000000"}} />
-
-const IconMdiPokeball = ({
+export const IconMdiPokeball = ({
   height = "1em",
   fill = "currentColor",
   focusable = "false",
@@ -22,8 +22,6 @@ const IconMdiPokeball = ({
     />
   </svg>
 );
-
-import React from "react";
 
 const Pokeball = () => {
   return (
