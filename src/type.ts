@@ -62,7 +62,6 @@ export type Pokemon = {
 
 export interface PokemonCardProps {
   pokemons: Pokemon[];
-  onClick: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type Sprite =
