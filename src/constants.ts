@@ -13,9 +13,7 @@ export const GENERATIONS = [
   { genId: "ninth", title: "NINTH" },
 ];
 
-export const BGM_MAX_NUM_IDX = 45;
-
-export const GEN_GROUPS = {
+export const GEN_GROUPS: Record<string, number[]> = {
   all: [1, 1025],
   first: [1, 151],
   second: [152, 251],
@@ -27,8 +25,6 @@ export const GEN_GROUPS = {
   eighth: [810, 905],
   ninth: [906, 1025],
 };
-
-export const MAX_MUSIC_LEN = 5;
 
 export const GEN_ID_KEY = "gen-id-key";
 
